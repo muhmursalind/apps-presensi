@@ -1,7 +1,8 @@
-import { clearSession, ADMIN_COOKIE } from '@/lib/auth/session';
-import { ok } from '@/lib/utils/response';
+import { NextResponse } from 'next/server';
+import { clearSessionCookie, ADMIN_COOKIE } from '@/lib/auth/session';
 
 export async function POST() {
-  await clearSession(ADMIN_COOKIE);
-  return ok({ message: 'Logout berhasil' });
+  const res = NextResponse.json({ success: true, data: { message: 'Logout berhasil' } });
+  clearSessionCookie(res, ADMIN_COOKIE);
+  return res;
 }
