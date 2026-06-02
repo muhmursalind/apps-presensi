@@ -1,20 +1,38 @@
 'use client';
 
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Fingerprint, History, Home, LogOut } from 'lucide-react';
+import { Fingerprint, History, Home, LogOut, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function UserLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const [autoEnabled, setAutoEnabled] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch('/api/user/me');
+        const json = await res.json();
+        if (json.success) setAutoEnabled(!!json.data.autoPresensiEnabled);
+      } catch { /* ignore */ }
+    })();
+  }, [pathname]);
 
   const logout = async () => {
     await fetch('/api/user/logout', { method: 'POST' });
     toast.success('Anda telah keluar');
     router.push('/login');
   };
+
+  const tabs = [
+    { href: '/beranda', label: 'Beranda', icon: Home },
+    { href: '/riwayat', label: 'Riwayat', icon: History },
+    ...(autoEnabled ? [{ href: '/otomatis', label: 'Otomatis', icon: Zap }] : []),
+  ];
 
   return (
     <div className="min-h-screen bg-slate-50 pb-20">
@@ -37,13 +55,16 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
       <main className="max-w-3xl mx-auto px-4 py-5">{children}</main>
 
       <nav className="fixed bottom-0 inset-x-0 bg-white border-t border-slate-200 z-40">
-        <div className="max-w-3xl mx-auto grid grid-cols-2">
-          <Link href="/beranda" className={`flex flex-col items-center gap-1 py-3 text-xs ${pathname === '/beranda' ? 'text-indigo-600 font-semibold' : 'text-slate-500'}`}>
-            <Home className="w-5 h-5" /> Beranda
-          </Link>
-          <Link href="/riwayat" className={`flex flex-col items-center gap-1 py-3 text-xs ${pathname === '/riwayat' ? 'text-indigo-600 font-semibold' : 'text-slate-500'}`}>
-            <History className="w-5 h-5" /> Riwayat
-          </Link>
+        <div className="max-w-3xl mx-auto grid" style={{ gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))` }}>
+          {tabs.map(({ href, label, icon: Icon }) => (
+            <Link
+              key={href}
+              href={href}
+              className={`flex flex-col items-center gap-1 py-3 text-xs ${pathname === href ? 'text-indigo-600 font-semibold' : 'text-slate-500'}`}
+            >
+              <Icon className="w-5 h-5" /> {label}
+            </Link>
+          ))}
         </div>
       </nav>
     </div>

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,7 +17,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Edit, Plus, Search, Trash2, Users, MapPin } from 'lucide-react';
+import { Edit, Plus, Search, Trash2, Users, MapPin, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface EmployeeRow {
@@ -28,6 +29,7 @@ interface EmployeeRow {
   jabatan: string | null;
   email: string | null;
   hasAuthorization: boolean;
+  autoPresensiEnabled?: boolean;
   lastLogin: string | null;
 }
 
@@ -36,6 +38,7 @@ export default function AdminEmployeesPage() {
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState('');
   const [delTarget, setDelTarget] = useState<EmployeeRow | null>(null);
+  const [togglingId, setTogglingId] = useState<string | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -64,6 +67,28 @@ export default function AdminEmployeesPage() {
       load();
     } else {
       toast.error(json.message || 'Gagal menghapus');
+    }
+  };
+
+  const toggleAuto = async (emp: EmployeeRow, enabled: boolean) => {
+    setTogglingId(emp.id);
+    try {
+      const res = await fetch(`/api/admin/employees/${emp.id}/auto-presensi`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ enabled }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        toast.success(enabled ? 'Akses Auto Presensi diaktifkan' : 'Akses Auto Presensi dinonaktifkan');
+        setList((prev) => prev.map((e) => (e.id === emp.id ? { ...e, autoPresensiEnabled: enabled } : e)));
+      } else {
+        toast.error(json.message || 'Gagal');
+      }
+    } catch {
+      toast.error('Terjadi kesalahan');
+    } finally {
+      setTogglingId(null);
     }
   };
 
@@ -117,8 +142,8 @@ export default function AdminEmployeesPage() {
                     <th className="p-3 font-medium">NIP/NUPTK</th>
                     <th className="p-3 font-medium">Nama</th>
                     <th className="p-3 font-medium">Instansi</th>
-                    <th className="p-3 font-medium">Device ID</th>
                     <th className="p-3 font-medium">Status</th>
+                    <th className="p-3 font-medium"><span className="inline-flex items-center gap-1"><Zap className="w-3.5 h-3.5" /> Auto</span></th>
                     <th className="p-3 font-medium text-right">Aksi</th>
                   </tr>
                 </thead>
@@ -137,13 +162,20 @@ export default function AdminEmployeesPage() {
                           <span className="text-slate-400 italic">-</span>
                         )}
                       </td>
-                      <td className="p-3 font-mono text-xs text-slate-600">{e.deviceId}</td>
                       <td className="p-3">
                         {e.hasAuthorization ? (
                           <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">Aktif</Badge>
                         ) : (
                           <Badge variant="secondary">Belum login</Badge>
                         )}
+                      </td>
+                      <td className="p-3">
+                        <Switch
+                          checked={!!e.autoPresensiEnabled}
+                          disabled={togglingId === e.id}
+                          onCheckedChange={(v) => toggleAuto(e, v)}
+                          aria-label="Toggle Auto Presensi"
+                        />
                       </td>
                       <td className="p-3">
                         <div className="flex items-center justify-end gap-2">

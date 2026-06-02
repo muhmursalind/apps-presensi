@@ -2,8 +2,13 @@ import { decrypt } from '@/lib/auth/crypto';
 import type { EmployeeDoc } from '@/lib/models/Employee';
 import type { CaraddeResponse, CaraddeLoginData } from './types';
 
-const BASE = process.env.CARADDE_API_BASE_URL as string;
-if (!BASE) console.warn('CARADDE_API_BASE_URL not set');
+function getBaseUrl(): string {
+  const base = process.env.CARADDE_API_BASE_URL;
+  if (!base) {
+    throw new Error('CARADDE_API_BASE_URL environment variable is required');
+  }
+  return base.replace(/\/+$/, '');
+}
 
 export interface CaraddeCallResult<T = unknown> {
   status: number;
@@ -15,7 +20,7 @@ export async function loginCaradde(
   password: string,
   deviceId: string
 ): Promise<CaraddeCallResult<CaraddeLoginData>> {
-  const res = await fetch(`${BASE}/auth/login`, {
+  const res = await fetch(`${getBaseUrl()}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     body: JSON.stringify({
@@ -58,7 +63,7 @@ async function rawCall<T>(
     headers['Content-Type'] = 'application/json';
     finalBody = JSON.stringify(body);
   }
-  const res = await fetch(`${BASE}${path}`, { method, headers, body: finalBody, cache: 'no-store' });
+  const res = await fetch(`${getBaseUrl()}${path}`, { method, headers, body: finalBody, cache: 'no-store' });
   let json = null;
   try { json = await res.json(); } catch { /* empty */ }
   return { status: res.status, json };
@@ -75,7 +80,6 @@ export async function caraddeCall<T = unknown>(
   body?: BodyInit | object
 ): Promise<CaraddeCallResult<T>> {
   if (!employee.authorization) {
-    // Force initial login
     const pwd = decrypt(employee.passwordEnc);
     const login = await loginCaradde(employee.nomorInduk, pwd, employee.deviceId);
     if (login.json?.meta?.code === 200 && login.json.data) {
@@ -92,7 +96,6 @@ export async function caraddeCall<T = unknown>(
 
   let result = await rawCall<T>(employee.authorization!, method, path, body);
   if (isUnauthenticated(result)) {
-    // Re-login
     const pwd = decrypt(employee.passwordEnc);
     const login = await loginCaradde(employee.nomorInduk, pwd, employee.deviceId);
     if (login.json?.meta?.code === 200 && login.json.data) {
@@ -102,8 +105,6 @@ export async function caraddeCall<T = unknown>(
       employee.employeeName = data.user.name;
       employee.lastLogin = new Date();
       await employee.save();
-      // Important: if body is FormData, it has already been consumed. Caller must pass
-      // a fresh FormData if they expect retry. For JSON bodies this is fine.
       if (!(body instanceof FormData)) {
         result = await rawCall<T>(employee.authorization!, method, path, body);
       }

@@ -16,5 +16,6 @@ export async function GET() {
     instansi: e.instansi,
     jabatan: e.jabatan,
     email: e.email,
+    autoPresensiEnabled: !!e.autoPresensiEnabled,
   });
 }

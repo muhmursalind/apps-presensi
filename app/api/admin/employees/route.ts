@@ -34,6 +34,8 @@ export async function GET() {
     email: e.email,
     caraddeUserId: e.caraddeUserId,
     hasAuthorization: !!e.authorization,
+    autoPresensiEnabled: !!e.autoPresensiEnabled,
+    autoPresensiActive: !!e.autoPresensiSchedule?.active,
     lastLogin: e.lastLogin,
     createdAt: e.createdAt,
   }));
