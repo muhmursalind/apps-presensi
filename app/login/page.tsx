@@ -138,15 +138,15 @@ export default function LoginPage() {
         <div className="w-16 h-16 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-lg shadow-indigo-200 mb-4">
           <Fingerprint className="w-8 h-8" />
         </div>
-        <h1 className="text-3xl font-bold text-slate-900">Absensi Presensi</h1>
-        <p className="text-sm text-slate-500 mt-1">Presensi Pegawai</p>
+        <h1 className="text-3xl font-bold text-slate-900">E-Absensi Presensi</h1>
+        <p className="text-sm text-slate-500 mt-1">Sistem Presensi Pegawai</p>
       </div>
 
       <Suspense fallback={<LoginFallback />}>
         <LoginInner />
       </Suspense>
 
-      <p className="mt-6 text-xs text-slate-400">&copy; {new Date().getFullYear()} Absensi &middot; Sistem Presensi Pegawai</p>
+      <p className="mt-6 text-xs text-slate-400">&copy; {new Date().getFullYear()} E-Absensi &middot; Sistem Presensi Pegawai</p>
     </div>
   );
 }

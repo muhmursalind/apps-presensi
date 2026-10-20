@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { Providers } from './providers';
 
 export const metadata: Metadata = {
-  title: 'Presensi Pegawai',
+  title: 'E-Absensi - Presensi Pegawai',
   description: 'Sistem Presensi Pegawai',
 };
 

@@ -106,7 +106,7 @@ export default function AdminEmployeesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2"><Users className="w-6 h-6 text-indigo-600" /> Daftar Pegawai</h1>
-          <p className="text-sm text-slate-500">Kelola akun pegawai untuk presensi Absensi</p>
+          <p className="text-sm text-slate-500">Kelola akun pegawai untuk presensi E-Absensi</p>
         </div>
         <Link href="/admin/pegawai/tambah">
           <Button><Plus className="w-4 h-4 mr-2" /> Tambah Pegawai</Button>

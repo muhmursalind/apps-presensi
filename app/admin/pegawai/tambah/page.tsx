@@ -46,7 +46,7 @@ export default function TambahPegawaiPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><UserPlus className="w-5 h-5 text-indigo-600" /> Tambah Pegawai</CardTitle>
-          <CardDescription>Masukkan kredensial Absensi yang akan digunakan oleh pegawai untuk presensi.</CardDescription>
+          <CardDescription>Masukkan kredensial E-Absensi yang akan digunakan oleh pegawai untuk presensi.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={submit} className="space-y-4">
@@ -55,14 +55,14 @@ export default function TambahPegawaiPage() {
               <Input id="ni" required value={nomorInduk} onChange={(e) => setNomorInduk(e.target.value)} placeholder="Contoh: 199810292025211068" inputMode="numeric" />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="pw">Password Absensi <span className="text-red-500">*</span></Label>
-              <Input id="pw" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password akun Absensi pegawai" />
+              <Label htmlFor="pw">Password E-Absensi <span className="text-red-500">*</span></Label>
+              <Input id="pw" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password akun E-Absensi pegawai" />
               <p className="text-xs text-slate-500">Disimpan terenkripsi (AES-256) untuk auto-refresh token.</p>
             </div>
             <div className="space-y-2">
               <Label htmlFor="did">Device ID <span className="text-red-500">*</span></Label>
               <Input id="did" required value={deviceId} onChange={(e) => setDeviceId(e.target.value)} placeholder="Contoh: O11019" />
-              <p className="text-xs text-slate-500">Device ID yang terdaftar di Absensi milik pegawai.</p>
+              <p className="text-xs text-slate-500">Device ID yang terdaftar di E-Absensi milik pegawai.</p>
             </div>
             <div className="flex justify-end gap-2 pt-2">
               <Link href="/admin"><Button type="button" variant="outline">Batal</Button></Link>
