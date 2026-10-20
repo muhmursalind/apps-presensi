@@ -3,8 +3,8 @@ import type { Metadata } from 'next';
 import { Providers } from './providers';
 
 export const metadata: Metadata = {
-  title: 'Caradde - Presensi Pegawai',
-  description: 'Sistem Presensi Pegawai modern untuk DINAS PENDIDIKAN KABUPATEN GOWA',
+  title: 'Presensi Pegawai',
+  description: 'Sistem Presensi Pegawai',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

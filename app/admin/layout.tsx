@@ -25,7 +25,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Fingerprint className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-sm font-semibold text-slate-900 leading-tight">Caradde Admin</div>
+              <div className="text-sm font-semibold text-slate-900 leading-tight">Absensi Admin</div>
               <div className="text-[11px] text-slate-500 leading-tight flex items-center gap-1"><ShieldCheck className="w-3 h-3" /> Panel Administrasi</div>
             </div>
           </Link>

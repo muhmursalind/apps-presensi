@@ -43,7 +43,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
               <Fingerprint className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-sm font-semibold text-slate-900 leading-tight">Caradde</div>
+              <div className="text-sm font-semibold text-slate-900 leading-tight">Absensi</div>
               <div className="text-[11px] text-slate-500 leading-tight">Presensi Pegawai</div>
             </div>
           </Link>
